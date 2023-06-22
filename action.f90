@@ -1,5 +1,3 @@
-
-
 !Functions
 module functions
     implicit none
@@ -30,6 +28,9 @@ program legrangian
     real, dimension(arr_length) :: arr     ! Array to hold random values
     integer :: i
     real :: lagrangian_value
+    integer, dimension(:), allocatable :: dimension_array
+    real, dimension(:), allocatable :: flattened_lattice
+
     
   
     ! Seed the random number generator
@@ -44,7 +45,7 @@ program legrangian
        write(*,"(I2, ': ', F200.4)") i, arr(i)
 
     end do
-
+    call lattice_make(2, dimension_array, flattened_lattice)
     lagrangian_value = lagrangian_equation(arr, arr_length, dim, sub_dim)
 
     write(*, "('Total Legrangian: ' F90.6)") lagrangian_value
