@@ -1,5 +1,6 @@
 module converter
     implicit none
+    
     integer, parameter :: Ndim = 2
     integer, parameter, dimension(1:Ndim) :: N = [100,100]
     integer, parameter :: Nsites = product(N)

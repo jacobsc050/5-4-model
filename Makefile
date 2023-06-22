@@ -8,10 +8,10 @@ MODULES = functions.mod converter.mod lattice_maker.mod
 PROGRAM = action
 
 # Object files
-OBJECTS = action.o convert.o lattice.o
+OBJECTS = convert.o lattice.o action.o 
 
 # Source files
-SOURCES = action.f90 convert.f90 lattice.f90
+SOURCES =  convert.f90 lattice.f90 action.f90
 
 # Default target
 all: $(PROGRAM)
