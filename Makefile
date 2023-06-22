@@ -2,23 +2,21 @@
 FC = gfortran
 
 # List of module files
-MODULES = functions.mod converter.mod lattice_maker.mod
+MODULES = functions.mod converter.mod lattice_maker.mod helper.mod
 
 # Main program
 PROGRAM = action
 
 # Object files
-OBJECTS = convert.o lattice.o action.o 
+OBJECTS = convert.o lattice.o metropolis.o action.o 
 
 # Source files
-SOURCES =  convert.f90 lattice.f90 action.f90
+SOURCES =  convert.f90 lattice.f90  metropolis.f90 action.f90
 
 # Default target
 all: $(PROGRAM)
 
-# Main program compilation
-$(PROGRAM): $(OBJECTS)
-	$(FC) -o $(PROGRAM) $(OBJECTS)
+
 
 #Compilation rules for object files
 %.o:%.f90
@@ -28,6 +26,9 @@ $(PROGRAM): $(OBJECTS)
 %.mod: %.f90
 	$(FC) -c $<
 
+# Main program compilation
+$(PROGRAM): $(OBJECTS)
+	$(FC) -o $(PROGRAM) $(OBJECTS)
 
 
 # Clean target
