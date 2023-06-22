@@ -3,15 +3,25 @@ module helper
     real :: PI =4.0*atan(1.0)
     contains
 
-    !this is an empty function 
-    subroutine sum_neighbor(data) result(res)  !this function returns an array the same dimension of data that has the sum of neighbors
+    function sum_neighbor(data) result(res)  !this function returns an array the same dimension of data that has the sum of neighbors
         
-        real, intent(in) :: data(:)
-        real, intent(out) :: result(:)    
-    
-        result(1:3)= 1 !fix this later 
+        real, allocatable :: data(:)
+        real, allocatable :: neighbor_list(:)
+        real, allocatable :: result(:)   
+        integer :: i, j 
+        
 
-    end subroutine 
+        call find_neighbor(data, neighbor_list)  ! I need find_neighbor as a subroutine 
+
+        array_loop:do i = 1, size(data)
+            
+            neighbor_loop:do j = 1, size(neighbor_list(2))
+                result(i) += data(neighbor_list(i,j))
+            end do neighbor_loop
+
+        end do array_loop
+
+    end function 
 
 
     !this works 
@@ -29,15 +39,14 @@ module helper
         end do 
     end function 
 
-    function evaluate_x_deriv(x_data, params, result) !returns the derivative of the Hamiltonian w.r.t. position, array of the length N
+    function evaluate_x_deriv(x_data, params) result(res) !returns the derivative of the Hamiltonian w.r.t. position, array of the length N
         
         real, allocatable :: neighbor(:)   
         real, allocatable :: x_data(:)
-        real, allocatable :: result(:)
+        real, allocatable :: res(:)
 
         real :: params(2)
         integer :: N 
-
 
         N = size(x_data)
         call sum_neighbor(x_data, neighbor)
@@ -48,7 +57,7 @@ module helper
 
     end function
 
-    subroutine leapfrog_update(data, params, proposal)
+    subroutine leapfrog_update(data, params, proposal) !can add some output for energy that shows whether we are on a phase space trajectory
 
         real, intent(in) :: data(:)
         real, intent(in) :: params(2)
@@ -77,6 +86,7 @@ module helper
 
 end module helper
 
+!just for me to test things g
 program ex1
     use helper
     implicit none 
