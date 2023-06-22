@@ -1,4 +1,4 @@
-module my_module
+module converter
     implicit none
     integer, parameter :: Ndim = 2
     integer, parameter, dimension(1:Ndim) :: N = [100,100]
@@ -24,6 +24,5 @@ module my_module
             i = mod(index-1,N(1)) + 1
             j = (index - i)/N(1) + 1
      end subroutine indexToCoordinates
-
      
-end module my_module
+end module converter
