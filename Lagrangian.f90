@@ -72,6 +72,3 @@ program legrangian
 
   
   end program legrangian
-
-
-
