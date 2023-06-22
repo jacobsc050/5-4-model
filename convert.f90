@@ -27,20 +27,3 @@ module my_module
 
      
 end module my_module
-
-program test
-    use my_module
-    implicit none
-    integer :: i,j,index
-    integer :: i_temp,j_temp,index_temp
-    do i=1,N(1)
-        do j=1,N(2)
-            index = coordinatesToIndex(i,j)
-            call indexToCoordinates(index,i_temp,j_temp)
-            if (i_temp/=i .or. j_temp/=j) then
-                print *, i,j, "    ",i_temp,j_temp
-            end if
-
-        end do
-    end do
-end program test
