@@ -19,7 +19,7 @@ def plot_lattice_from_file(filename, size):
     plt.pcolormesh(X, Y, data, cmap='viridis')
     plt.colorbar()
     plt.xlabel('x')
-    plt.ylabel('y')
+    plt.ylabel('t')
     plt.title('Lattice Plot')
     # Save the plot as a PNG image
     plt.savefig('lattice_plot.png')
