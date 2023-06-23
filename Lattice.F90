@@ -1,3 +1,6 @@
+! Include the Mersenne Twister module
+include 'mt19937.f90'
+
 program ex1
     implicit none  
     !For an Nth dimensional lattice
@@ -39,9 +42,19 @@ program ex1
     !~~~ I know fortrans RNG is bad, this is placeholder for now ~~~
     ! (sorry paul :) ) 
 
-    do i = 0, latticeCount
-        call random_number(y) 
-        lattice(i) = y * 10
+    do 
+    ! Declare variables
+  integer :: seed, random_number
+  integer, dimension(624) :: state
+
+  ! Initialize the Mersenne Twister with a seed value
+  seed = 123456
+  call init_genrand(seed)
+
+  ! Generate a random number
+  random_number = genrand_int32()
+
+  ! Use the random number in your code
     end do 
 
   
