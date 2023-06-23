@@ -38,9 +38,11 @@ program action
     real :: action_value
     real, dimension(:), allocatable :: flattened_lattice
     real, dimension(:), allocatable :: x,y
+    !hello, Margit
     real, dimension(2) :: params
     params(1) = 1 
     params(2) = 2 
+
 
     call lattice_make(dim, size, flattened_lattice)
     call write_lattice_to_file(dim, size, flattened_lattice)
