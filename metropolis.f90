@@ -52,8 +52,8 @@ module helper
              result(i) = -2*params(1)*neighbor(i)+2*x_data(i)+4*params(2)*(x_data(i)*x_data(i)-1)*x_data(i)
          end do 
 
-     end function evaluate_x_deriv
-
+    end function evaluate_x_deriv
+     
     subroutine leapfrog_update(data, params, proposal)
 
         real, intent(in) :: data(:)
