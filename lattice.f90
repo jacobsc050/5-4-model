@@ -1,5 +1,7 @@
 module lattice_maker
+    use converter
     implicit none 
+    
     contains
     subroutine lattice_make(dimension, size, lattice)
         !For an Nth dimensional lattice
@@ -49,5 +51,32 @@ module lattice_maker
         end if
         
     end subroutine lattice_make
+
+    
+  
+
+  subroutine write_lattice_to_file(dim, size, lattice)
+    real, intent(in) :: lattice(:)
+    integer, intent(in) :: dim, size
+    character(len=50) :: filename
+    integer :: file_unit, i, j
+
+    ! Open the file for writing
+    filename = "lattice.txt"
+    open(newunit=file_unit, file=filename, status="replace")
+
+    ! Write the lattice values to the file
+    do j = 1, size
+      do i = 1, size
+        write(file_unit, *) lattice(coordinatesToIndex(i, j))
+        
+      end do
+      ! Write a newline character to create a new column
+      write(file_unit, *)
+    end do
+
+    ! Close the file
+    close(file_unit)
+  end subroutine write_lattice_to_file
 
 end module lattice_maker 
