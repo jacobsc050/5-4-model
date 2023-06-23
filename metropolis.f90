@@ -70,24 +70,24 @@ module helper
         momentum = return_normal(N)
 
         !this block runs over one leap frog update 
-        proposal = data+time_step/2*momentum
+        proposal = data+(time_step/2)*momentum
 
         momentum = proposal -time_step*evaluate_x_deriv(proposal, params)
         
-        proposal = proposal +time_step/2*momentum 
+        proposal = proposal + (time_step/2)*momentum 
 
     end subroutine leapfrog_update
 
 end module helper
 
-program ex1
-    use helper
-    implicit none 
-    real, dimension(2) :: x, y
+! program ex1
+!     use helper
+!     implicit none 
+!     real, dimension(2) :: x, y
 
-    x = return_normal(2)
-    y = return_normal(2)
+!     x = return_normal(2)
+!     y = return_normal(2)
     
-    write(*,*) x+y
+!     write(*,*) x+y
 
-end program 
+! end program 

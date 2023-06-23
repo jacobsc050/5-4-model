@@ -26,7 +26,7 @@ module lattice_maker
         ! (sorry paul :) ) 
 
         do i = 1, latticeCount
-            call random_number(y) 
+            call random_number(y)
             lattice(i) = y * 10
         end do 
 
