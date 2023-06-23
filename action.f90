@@ -38,6 +38,7 @@ program action
     real, dimension(:), allocatable :: x,y
 
     call lattice_make(dim, size, flattened_lattice)
+    call write_lattice_to_file(dim, size, flattened_lattice)
     action_value = action_equation(flattened_lattice,dim,size)
    
 

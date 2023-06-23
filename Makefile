@@ -33,4 +33,4 @@ $(PROGRAM): $(OBJECTS)
 
 # Clean target
 clean:
-	rm -f $(PROGRAM) $(MODULES) $(OBJECTS)
+	rm -f $(PROGRAM) $(MODULES) $(OBJECTS) *.png *.txt
