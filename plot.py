@@ -22,10 +22,11 @@ def plot_lattice_from_file(filename, size):
     plt.ylabel('t')
     plt.title('Lattice Plot')
     # Save the plot as a PNG image
-    plt.savefig('lattice_plot.png')
+    plt.savefig('post_plot.png')
 
 # Specify the filename and size of the lattice
-filename = 'lattice.txt'
+#filename = 'pre_lattice.txt'
+filename = 'post_lattice.txt'
 size = 100
 try:
     # Call the function to plot the lattice

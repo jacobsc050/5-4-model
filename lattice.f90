@@ -55,15 +55,14 @@ module lattice_maker
     
   
 
-  subroutine write_lattice_to_file(dim, size, lattice)
+  subroutine write_lattice_to_file(dim, size, lattice, filename)
     real, intent(in) :: lattice(:)
     integer, intent(in) :: dim, size
-    character(len=50) :: filename
+    character (len=:), allocatable :: filename
     integer :: file_unit, i, j
 
-    ! Open the file for writing
-    filename = "lattice.txt"
-    open(newunit=file_unit, file=filename, status="replace")
+    
+    open(newunit=file_unit, file=trim(filename), status="replace")
 
     ! Write the lattice values to the file
     do j = 1, size
