@@ -2,16 +2,16 @@
 FC = gfortran
 
 # List of module files
-MODULES = functions.mod converter.mod lattice_maker.mod helper.mod
+MODULES = mt19937.mod functions.mod converter.mod lattice_maker.mod  helper.mod
 
 # Main program
 PROGRAM = action
 
 # Object files
-OBJECTS = convert.o lattice.o metropolis.o action.o 
+OBJECTS = convert.o mt19937.o  lattice.o metropolis.o action.o 
 
 # Source files
-SOURCES =  convert.f90 lattice.f90  metropolis.f90 action.f90
+SOURCES =  convert.f90 lattice.f90  metropolis.f90 action.f90 mt19937.f90
 
 # Default target
 all: $(PROGRAM)
