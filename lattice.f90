@@ -1,5 +1,6 @@
 module lattice_maker
     use converter
+    use mt19937
     implicit none 
     
     contains
