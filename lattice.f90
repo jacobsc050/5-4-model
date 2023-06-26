@@ -1,3 +1,6 @@
+! Include the Mersenne Twister module
+include 'mt19937.f90'
+
 module lattice_maker
     use converter
     implicit none 
