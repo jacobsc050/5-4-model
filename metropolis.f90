@@ -43,40 +43,47 @@ module helper
 
         real :: params(2)
         integer :: N,i 
-
-
         N = size(x_data)
+        allocate(neighbor(N))
+        allocate(result(N))
+
+
         call sum_neighbor(x_data, neighbor)
 
          do i =1,N
              result(i) = -2*params(1)*neighbor(i)+2*x_data(i)+4*params(2)*(x_data(i)*x_data(i)-1)*x_data(i)
          end do 
 
+         deallocate(neighbor)
+
     end function evaluate_x_deriv
      
-    subroutine leapfrog_update(data, params, proposal)
+    function leapfrog_update(flattened_lattice, dim, sizes, params) result(new_lattice)
 
-        real, intent(in) :: data(:)
-        real, intent(in) :: params(2)
-        real, intent(out) :: proposal(:)
+        real, dimension(:) :: flattened_lattice
+        real, dimension(2) :: params
+        real, allocatable :: new_lattice(:)
+        integer :: i, dim, sizes
+        real, dimension(:), allocatable :: momentum 
 
         integer :: N
         real :: time_step = 0.005 !set the size of the timesteps. 
-        real, dimension(:), allocatable :: momentum 
 
-        integer :: i 
+        allocate(new_lattice(sizes**dim))
+        allocate(momentum(sizes**dim))
 
-        N = size(data)
-        momentum = return_normal(N)
+        momentum = return_normal(sizes**dim)
 
         !this block runs over one leap frog update 
-        proposal = data+(time_step/2)*momentum
+        new_lattice = flattened_lattice+(time_step/2)*momentum
 
-        momentum = proposal -time_step*evaluate_x_deriv(proposal, params)
+        momentum = new_lattice -time_step*evaluate_x_deriv(new_lattice, params)
         
-        proposal = proposal + (time_step/2)*momentum 
+        new_lattice = new_lattice + (time_step/2)*momentum 
 
-    end subroutine leapfrog_update
+        deallocate(momentum)
+
+    end function leapfrog_update
 
 end module helper
 
