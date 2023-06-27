@@ -27,8 +27,13 @@ module lattice_maker
         ! (sorry paul :) ) 
 
         do i = 1, latticeCount
+
+            y = grnd()
+            lattice(i) = y * 10
+
             call random_number(y)
             lattice(i) = y * 1 - 0.5 
+
         end do 
 
     
