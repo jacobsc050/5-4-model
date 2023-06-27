@@ -49,10 +49,6 @@ module helper
             end if 
             
         end do 
-
-    
-
-
 end function metropolis_hastings
     !Seems like there is no error for now
     subroutine sum_neighbor(data, res)  !this function returns an array the same dimension of data that has the sum of neighbors
@@ -70,7 +66,6 @@ end function metropolis_hastings
         end do 
 
     end subroutine 
-
 
     function return_normal(N) result(res) !returns an array of N normally distributed number using Box-Muller
         integer :: N, i 
@@ -92,14 +87,12 @@ end function metropolis_hastings
         real, allocatable :: neighbor(:)   
         real:: x_data(:)
         real, allocatable :: result(:)
-
         real :: params(2)
         integer :: N,i 
+
         N = size(x_data)
         allocate(neighbor(N))
         allocate(result(N))
-
-
         call sum_neighbor(x_data, neighbor)
 
          do i =1,N
