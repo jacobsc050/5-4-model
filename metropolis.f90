@@ -59,8 +59,7 @@ module helper
             call random_number(accept_prob)
             
 
-        end do 
-end function metropolis_hastings
+     
 
             ! Perform Metropolis-Hastings acceptance/rejection step
             mini = min(1.0, new_action / flattened_action)
