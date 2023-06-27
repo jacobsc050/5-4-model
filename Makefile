@@ -1,6 +1,6 @@
 # Compiler settings
 FC = gfortran
-FFLAGS = -O2 -fopenmp -ftree-parallelize-loops=40
+FFLAGS = -O2 -fopenmp -ftree-parallelize-loops=3
 
 # List of module files
 MODULES = mt19937.mod functions.mod converter.mod lattice_maker.mod  helper.mod

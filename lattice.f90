@@ -28,7 +28,7 @@ module lattice_maker
 
         do i = 1, latticeCount
             call random_number(y)
-            lattice(i) = y * 10 - 5 
+            lattice(i) = y * 1 - 0.5 
         end do 
 
     
@@ -101,7 +101,7 @@ module lattice_maker
     if (.not. fileExists) then
       ! Open the file in write mode if it doesn't exist
       open(newunit=unitNumber, file=fileName, status='replace')
-      write(unitNumber, '(A30,A1,A30,A1,A30,A1,A30)') trim(columnNames(1)), ' ', trim(columnNames(2)), ' ', &
+      write(unitNumber, '(A20,A1,A20,A1,A20,A1,A20)') trim(columnNames(1)), ' ', trim(columnNames(2)), ' ', &
       trim(columnNames(3)), ' ', trim(columnNames(4))
       
     else
@@ -124,7 +124,7 @@ module lattice_maker
     meanFourthPower = sumOfFourthPower / real(size)
   
     ! Write the results to the file
-    write(unitNumber, '(F20.6,A1,F20.6,A1,F20.6,A1,F20.6)') action_value, ' ', meanValue, ' ', meanSquares, ' ', meanFourthPower
+    write(unitNumber, '(F21.6,A1,F20.6,A1,F20.6,A1,F20.6)') action_value, ' ', meanValue, ' ', meanSquares, ' ', meanFourthPower
   
     ! Close the file
     close(unitNumber)

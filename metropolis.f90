@@ -15,41 +15,64 @@ module helper
         if(dim==2) then 
             do j = 1,size**dim
                 call nearestNeighbors(j, left, right, top, bottom)
-                action_at_a_point = -1 * lattice(j) * (lattice(top) + lattice(bottom) + lattice(left) + lattice(right)) &
-                + params(1)* lattice(j) ** 2 + params(2) * lattice(j) ** 4
+                action_at_a_point = -2 * params(1) * lattice(j) * (lattice(top) + lattice(bottom) + lattice(left) + lattice(right))&
+                + lattice(j) ** 2 + params(2) * (lattice(j) ** 2 - 1 ) ** 2
                 tot_action = tot_action + action_at_a_point 
                 return_value = tot_action
             end do 
         end if
-    end function action_equation  
-    function metropolis_hastings(flattened_lattice, dim, sizes, params) result(new_lattice)
-        real, dimension(:) :: flattened_lattice
-        real, dimension(2) :: params
-        real, allocatable :: new_lattice(:)
-        integer :: i, dim, sizes
-        double precision::  flattened_action, new_action
-        real :: random_num, mini, accept_prob
+    end function action_equation
 
-        allocate(new_lattice(size(flattened_lattice)))
+    real function point_action(lattice, j, dim, size, params) result(return_value)
+        integer:: dim, size, i, j   
+        real, dimension(size ** dim) :: lattice
+        real, dimension(2) :: params 
+        real :: tot_action, action_at_a_point !need to make consts something more realistic
+        integer :: left, right, top, bottom
+        !hello
+        !write(*,*) "Calculating action:"
+        call nearestNeighbors(j, left, right, top, bottom)
+        return_value = -2 * params(1) * lattice(j) * (lattice(top) + lattice(bottom) + lattice(left) + lattice(right))&
+        + lattice(j) ** 2 + params(2) * (lattice(j) ** 2 - 1 ) ** 2
+         
+    end function point_action
+
+    function metropolis_hastings(flattened_lattice, dim, sizes, params) result(new_lattice)
+        real, dimension(:), intent(in) :: flattened_lattice
+        real, dimension(2), intent(in) :: params
+        real, dimension(:), allocatable :: new_lattice
+        integer, intent(in) :: dim, sizes
+        integer :: i
+        real :: random_nums
+        real :: flattened_action, new_action, accept_prob, mini
+        
         new_lattice = flattened_lattice
         do i = 1, size(flattened_lattice)
-            !write(*,*) i
-            call random_number(random_num)
-            new_lattice(i) = flattened_lattice(i) + 2.0*random_num - 1.0
-            flattened_action = exp( -1 * action_equation(flattened_lattice, dim, sizes, params))
-            new_action = exp( -1 * action_equation(new_lattice, dim, sizes, params))
+            call random_number(random_nums)
+            flattened_action = exp(-point_action(flattened_lattice, i, dim, sizes, params))
+            new_lattice(i) = flattened_lattice(i) + 1.0 * random_nums- .5
+            
+            ! Calculate new action only for the updated element
+            new_action = exp(-point_action(new_lattice, i, dim, sizes, params))
+            
+            ! Generate accept probability
             call random_number(accept_prob)
-            !write(*, *)  new_action, flattened_action, new_action/flattened_action, accept_prob
-            mini = min(1.0, new_action/flattened_action)
             
-            if (accept_prob>mini) then
-                write(*,*) "No Update"
-                new_lattice(i) = flattened_lattice(i)
-            
-            end if 
-            
+
         end do 
 end function metropolis_hastings
+
+            ! Perform Metropolis-Hastings acceptance/rejection step
+            mini = min(1.0, new_action / flattened_action)
+            if (accept_prob > mini) then
+                new_lattice(i) = flattened_lattice(i)
+            end if
+
+          
+        end do
+    
+    end function metropolis_hastings    
+
     !Seems like there is no error for now
     subroutine sum_neighbor(data, res)  !this function returns an array the same dimension of data that has the sum of neighbors
         
