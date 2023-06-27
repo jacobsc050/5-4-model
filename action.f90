@@ -25,14 +25,14 @@ program action
     ! probability = exp(-1 * action_value)
     ! write(*, "('Probability:' F10.27)") probability
 
-    do j = 1,10
+    do j = 1,1000
         write(*,'(A, I0)') "j: ", j 
         flattened_lattice = metropolis_hastings(flattened_lattice, dim, size, params) 
     end do 
     filename = "post_lattice.txt"
     call write_lattice_to_file(dim, size, flattened_lattice, filename)
 
-    do j = 1,10
+    do j = 1,1000
         write(*,'(A, I0)') "j: ", j 
         action_value = action_equation(flattened_lattice,dim, size, params)
         flattened_lattice = metropolis_hastings(flattened_lattice, dim, size, params) 

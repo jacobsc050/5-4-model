@@ -28,7 +28,7 @@ module lattice_maker
 
         do i = 1, latticeCount
             call random_number(y)
-            lattice(i) = y * 10
+            lattice(i) = y * 10 - 5 
         end do 
 
     
@@ -101,7 +101,8 @@ module lattice_maker
     if (.not. fileExists) then
       ! Open the file in write mode if it doesn't exist
       open(newunit=unitNumber, file=fileName, status='replace')
-      write(unitNumber, '(A30,A1,A30,A1,A30,A1,A30)') columnNames(1), ' ', columnNames(2), ' ', columnNames(3), ' ', columnNames(4)
+      write(unitNumber, '(A30,A1,A30,A1,A30,A1,A30)') trim(columnNames(1)), ' ', trim(columnNames(2)), ' ', &
+      trim(columnNames(3)), ' ', trim(columnNames(4))
       
     else
       ! Open the file in append mode if it exists
