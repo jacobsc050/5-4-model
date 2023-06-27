@@ -1,5 +1,6 @@
 module helper
     use converter 
+    use functions
     implicit none
     real :: PI = 4.0*atan(1.0)
     contains
@@ -57,12 +58,25 @@ module helper
          deallocate(neighbor)
 
     end function evaluate_x_deriv
-     
-    function leapfrog_update(flattened_lattice, dim, sizes, params) result(new_lattice)
 
-        real, dimension(:) :: flattened_lattice
-        real, dimension(2) :: params
-        real, allocatable :: new_lattice(:)
+    double precision function find_hamiltonian(momentum, phi, dim, sizes, params) result(hamiltonian)
+        real, dimension(:) :: momentum, phi
+        integer :: i, dim, sizes
+        real, dimension(2) ::params
+        hamiltonian = 0
+        do i=1, size(momentum)
+            hamiltonian = hamiltonian + momentum(i)**2/2
+        end do 
+        hamiltonian = hamiltonian+action_equation(phi, dim, sizes, params)
+    end function find_hamiltonian
+     
+    subroutine leapfrog_update(flattened_lattice, dim, sizes, params, new_lattice, old_H, new_H)
+
+        real, dimension(:), intent(in):: flattened_lattice
+        real, dimension(2), intent(in):: params
+        real, allocatable, intent(out):: new_lattice(:)
+        double precision, intent(out):: old_H, new_H
+
         integer :: i, dim, sizes
         real, dimension(:), allocatable :: momentum 
 
@@ -73,6 +87,7 @@ module helper
         allocate(momentum(sizes**dim))
 
         momentum = return_normal(sizes**dim)
+        old_H = find_hamiltonian(momentum, flattened_lattice, dim, sizes, params)
 
         !this block runs over one leap frog update 
         new_lattice = flattened_lattice+(time_step/2)*momentum
@@ -81,10 +96,32 @@ module helper
         
         new_lattice = new_lattice + (time_step/2)*momentum 
 
+        new_H =find_hamiltonian(momentum, new_lattice, dim, sizes, params)
+
         deallocate(momentum)
 
-    end function leapfrog_update
+    end subroutine leapfrog_update     
 
+
+    function HMC(flattened_lattice, dim, sizes, params) result(new_lattice)
+
+        real, dimension(:) :: flattened_lattice
+        real, dimension(2) :: params
+        real, allocatable :: new_lattice(:)
+        integer :: i, dim, sizes
+        double precision::  old_H, new_H
+        real :: mini, accept_prob
+
+        call leapfrog_update(flattened_lattice, dim,sizes, params, new_lattice, old_H, new_H) 
+        ! metropolis step 
+        mini = min(1.0, exp(-1*(new_H-old_H)))
+        call random_number(accept_prob)
+        if (accept_prob>mini) then 
+            new_lattice = flattened_lattice
+            write(*,*) "HMC update failed"
+        end if 
+
+    end function HMC 
 end module helper
 
 ! program ex1
