@@ -58,6 +58,10 @@ module helper
             ! Generate accept probability
             call random_number(accept_prob)
             
+
+        end do 
+end function metropolis_hastings
+
             ! Perform Metropolis-Hastings acceptance/rejection step
             mini = min(1.0, new_action / flattened_action)
             if (accept_prob > mini) then
@@ -68,6 +72,7 @@ module helper
         end do
     
     end function metropolis_hastings    
+
     !Seems like there is no error for now
     subroutine sum_neighbor(data, res)  !this function returns an array the same dimension of data that has the sum of neighbors
         
@@ -85,7 +90,6 @@ module helper
 
     end subroutine 
 
-
     function return_normal(N) result(res) !returns an array of N normally distributed number using Box-Muller
         integer :: N, i 
         real, dimension(:), allocatable :: res 
@@ -95,7 +99,8 @@ module helper
         allocate(x(N))
 
         do i = 1,N
-            call random_number(x)   !This puts random numbers in the declared array, x
+            call random_number(x)
+            !This puts random numbers in the declared array, x
             res(i) = sqrt(-2*log(x(1)))*cos(2*PI*x(2)) ! The box muller formula
         end do 
     end function return_normal
@@ -105,14 +110,12 @@ module helper
         real, allocatable :: neighbor(:)   
         real:: x_data(:)
         real, allocatable :: result(:)
-
         real :: params(2)
         integer :: N,i 
+
         N = size(x_data)
         allocate(neighbor(N))
         allocate(result(N))
-
-
         call sum_neighbor(x_data, neighbor)
 
          do i =1,N
@@ -123,14 +126,16 @@ module helper
 
     end function evaluate_x_deriv
 
-    double precision function find_hamiltonian(momentum, phi, dim, sizes, params) result(hamiltonian)
+    function find_hamiltonian(momentum, phi, dim, sizes, params) result(hamiltonian)
         real, dimension(:) :: momentum, phi
         integer :: i, dim, sizes
         real, dimension(2) ::params
+        real ::hamiltonian
         hamiltonian = 0
         do i=1, size(momentum)
-            hamiltonian = hamiltonian + momentum(i)**2/2
+            hamiltonian = hamiltonian + momentum(i)*momentum(i)/2
         end do 
+        write(*,*) "momentum sum is given", hamiltonian
         hamiltonian = hamiltonian+action_equation(phi, dim, sizes, params)
     end function find_hamiltonian
      
@@ -139,7 +144,7 @@ module helper
         real, dimension(:), intent(in):: flattened_lattice
         real, dimension(2), intent(in):: params
         real, allocatable, intent(out):: new_lattice(:)
-        double precision, intent(out):: old_H, new_H
+        real, intent(out):: old_H, new_H
 
         integer :: i, dim, sizes
         real, dimension(:), allocatable :: momentum 
@@ -152,6 +157,7 @@ module helper
 
         momentum = return_normal(sizes**dim)
         old_H = find_hamiltonian(momentum, flattened_lattice, dim, sizes, params)
+        write(*,*) "Hamiltonian in update is given", old_H
 
         !this block runs over one leap frog update 
         new_lattice = flattened_lattice+(time_step/2)*momentum
@@ -161,19 +167,20 @@ module helper
         new_lattice = new_lattice + (time_step/2)*momentum 
 
         new_H =find_hamiltonian(momentum, new_lattice, dim, sizes, params)
-
+        write(*,*) "Hamiltonian after update is given", new_H
         deallocate(momentum)
 
     end subroutine leapfrog_update     
 
 
-    function HMC(flattened_lattice, dim, sizes, params) result(new_lattice)
+    subroutine HMC(flattened_lattice, dim, sizes, params, new_lattice, H_val)
 
-        real, dimension(:) :: flattened_lattice
-        real, dimension(2) :: params
-        real, allocatable :: new_lattice(:)
+        real, dimension(:), intent(in):: flattened_lattice
+        real, dimension(2), intent(in):: params
+        real, allocatable, intent(out):: new_lattice(:)
+        real, intent(out) :: H_val
         integer :: i, dim, sizes
-        double precision::  old_H, new_H
+        real ::  old_H, new_H
         real :: mini, accept_prob
 
         call leapfrog_update(flattened_lattice, dim,sizes, params, new_lattice, old_H, new_H) 
@@ -183,9 +190,12 @@ module helper
         if (accept_prob>mini) then 
             new_lattice = flattened_lattice
             write(*,*) "HMC update failed"
+            H_val = old_H
+        else
+            H_val = new_H
         end if 
 
-    end function HMC 
+    end subroutine HMC 
 end module helper
 
 ! program ex1
