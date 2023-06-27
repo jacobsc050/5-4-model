@@ -11,7 +11,7 @@ PROGRAM = action
 OBJECTS = convert.o mt19937.o  lattice.o metropolis.o action.o 
 
 # Source files
-SOURCES =  convert.f90 lattice.f90  metropolis.f90 action.f90 mt19937.f90
+SOURCES =  convert.f90 lattice.f90  metropolis.f90 mt19937.f90 action.f90 
 
 # Default target
 all: $(PROGRAM)
