@@ -131,7 +131,7 @@ MODULE mt19937
         IF(mti == n+1) THEN
       !                            if sgrnd() has not been called,
           CALL sgrnd(time())
-      !                              a default initial seed is used
+      !                              a default initial seed is used (time)
         END IF
       
         DO  kk = 0, n-m-1
