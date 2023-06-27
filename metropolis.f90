@@ -1,9 +1,59 @@
 module helper
     use converter 
-    use functions
+    use iso_fortran_env
     implicit none
     real :: PI = 4.0*atan(1.0)
     contains
+    real function action_equation(lattice, dim, size, params) result(return_value)
+        integer:: dim, size, j   
+        real, dimension(size ** dim) :: lattice
+        real, dimension(2) :: params 
+        real :: tot_action, action_at_a_point !need to make consts something more realistic
+        integer :: left, right, top, bottom
+        !hello
+        !write(*,*) "Calculating action:"
+        if(dim==2) then 
+            do j = 1,size**dim
+                call nearestNeighbors(j, left, right, top, bottom)
+                action_at_a_point = -1 * lattice(j) * (lattice(top) + lattice(bottom) + lattice(left) + lattice(right)) &
+                + params(1)* lattice(j) ** 2 + params(2) * lattice(j) ** 4
+                tot_action = tot_action + action_at_a_point 
+                return_value = tot_action
+            end do 
+        end if
+    end function action_equation  
+    function metropolis_hastings(flattened_lattice, dim, sizes, params) result(new_lattice)
+        real, dimension(:) :: flattened_lattice
+        real, dimension(2) :: params
+        real, allocatable :: new_lattice(:)
+        integer :: i, dim, sizes
+        double precision::  flattened_action, new_action
+        real :: random_num, mini, accept_prob
+
+        allocate(new_lattice(size(flattened_lattice)))
+        new_lattice = flattened_lattice
+        do i = 1, size(flattened_lattice)
+            !write(*,*) i
+            call random_number(random_num)
+            new_lattice(i) = flattened_lattice(i) + 2.0*random_num - 1.0
+            flattened_action = exp( -1 * action_equation(flattened_lattice, dim, sizes, params))
+            new_action = exp( -1 * action_equation(new_lattice, dim, sizes, params))
+            call random_number(accept_prob)
+            !write(*, *)  new_action, flattened_action, new_action/flattened_action, accept_prob
+            mini = min(1.0, new_action/flattened_action)
+            
+            if (accept_prob>mini) then
+                write(*,*) "No Update"
+                new_lattice(i) = flattened_lattice(i)
+            
+            end if 
+            
+        end do 
+
+    
+
+
+end function metropolis_hastings
     !Seems like there is no error for now
     subroutine sum_neighbor(data, res)  !this function returns an array the same dimension of data that has the sum of neighbors
         

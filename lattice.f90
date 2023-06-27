@@ -28,7 +28,7 @@ module lattice_maker
 
         do i = 1, latticeCount
             call random_number(y)
-            lattice(i) = y * 10
+            lattice(i) = y * 10 - 5 
         end do 
 
     
@@ -79,4 +79,55 @@ module lattice_maker
     close(file_unit)
   end subroutine write_lattice_to_file
 
+  subroutine calculateAndOutputResults(myArray, size, fileName, action_value)
+    implicit none
+    real, intent(in) :: myArray(:)
+    integer, intent(in) :: size
+    character(len=*), intent(in) :: fileName
+    real, intent(in) :: action_value
+    real :: sumValues, sumOfSquares, sumOfFourthPower  ! Sum variables
+    real :: meanValue, meanSquares, meanFourthPower   ! Mean variables
+    integer :: i
+    integer :: unitNumber
+    logical :: fileExists
+
+    ! Define column names
+    character(len=21), dimension(4) :: columnNames
+    columnNames = ["Action               ","Mean value           ", "Mean of squares      ", "Mean of fourth powers"]
+  
+    ! Check if the file already exists
+    inquire(file=trim(fileName), exist=fileExists)
+  
+    if (.not. fileExists) then
+      ! Open the file in write mode if it doesn't exist
+      open(newunit=unitNumber, file=fileName, status='replace')
+      write(unitNumber, '(A30,A1,A30,A1,A30,A1,A30)') trim(columnNames(1)), ' ', trim(columnNames(2)), ' ', &
+      trim(columnNames(3)), ' ', trim(columnNames(4))
+      
+    else
+      ! Open the file in append mode if it exists
+      open(newunit=unitNumber, file=fileName, status='unknown', action='readwrite', position='append')
+    end if
+  
+    ! Calculate the sum of the array values
+    sumValues = sum(myArray)
+  
+    ! Calculate the sum of squares
+    sumOfSquares = sum(myArray**2)
+  
+    ! Calculate the sum of fourth powers
+    sumOfFourthPower = sum(myArray**4)
+  
+    ! Calculate the mean values
+    meanValue = sumValues / real(size)
+    meanSquares = sumOfSquares / real(size)
+    meanFourthPower = sumOfFourthPower / real(size)
+  
+    ! Write the results to the file
+    write(unitNumber, '(F20.6,A1,F20.6,A1,F20.6,A1,F20.6)') action_value, ' ', meanValue, ' ', meanSquares, ' ', meanFourthPower
+  
+    ! Close the file
+    close(unitNumber)
+  
+  end subroutine calculateAndOutputResults
 end module lattice_maker 
