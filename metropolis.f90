@@ -148,7 +148,7 @@ module helper
         real, dimension(:), allocatable :: momentum 
 
         integer :: N
-        real :: time_step = 0.001!set the size of the timesteps. 
+        real :: time_step = 0.008!set the size of the timesteps. 
 
         allocate(new_lattice(sizes**dim))
         allocate(momentum(sizes**dim))
