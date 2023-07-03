@@ -3,3 +3,4 @@
 *.txt
 *.png
 *.exe
+!HMC_data
