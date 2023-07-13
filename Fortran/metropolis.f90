@@ -134,6 +134,7 @@ module helper
         do i=1, size(momentum)
             hamiltonian = hamiltonian + momentum(i)*momentum(i)/2
         end do 
+        write(*,*) "momentum sum is given", hamiltonian
         hamiltonian = hamiltonian+action_equation(phi, dim, sizes, params)
     end function find_hamiltonian
      
@@ -148,36 +149,35 @@ module helper
         real, dimension(:), allocatable :: momentum 
 
         integer :: N
-        real :: time_step = 0.008!set the size of the timesteps. 
+        real :: time_step = 0.005 !set the size of the timesteps. 
 
         allocate(new_lattice(sizes**dim))
         allocate(momentum(sizes**dim))
 
         momentum = return_normal(sizes**dim)
         old_H = find_hamiltonian(momentum, flattened_lattice, dim, sizes, params)
-        !write(*,*) "Hamiltonian in update is given", old_H
+        write(*,*) "Hamiltonian in update is given", old_H
 
         !this block runs over one leap frog update 
         new_lattice = flattened_lattice+(time_step/2)*momentum
 
-        momentum = momentum -time_step*evaluate_x_deriv(new_lattice, params)
+        momentum = new_lattice -time_step*evaluate_x_deriv(new_lattice, params)
         
         new_lattice = new_lattice + (time_step/2)*momentum 
 
         new_H =find_hamiltonian(momentum, new_lattice, dim, sizes, params)
-        !write(*,*) "Hamiltonian after update is given", new_H
+        write(*,*) "Hamiltonian after update is given", new_H
         deallocate(momentum)
 
     end subroutine leapfrog_update     
 
 
-    subroutine HMC(flattened_lattice, dim, sizes, params, new_lattice, H_val, success)
+    subroutine HMC(flattened_lattice, dim, sizes, params, new_lattice, H_val)
 
         real, dimension(:), intent(in):: flattened_lattice
         real, dimension(2), intent(in):: params
         real, allocatable, intent(out):: new_lattice(:)
         real, intent(out) :: H_val
-        integer, intent(out) :: success
         integer :: i, dim, sizes
         real ::  old_H, new_H
         real :: mini, accept_prob
@@ -185,17 +185,15 @@ module helper
         call leapfrog_update(flattened_lattice, dim,sizes, params, new_lattice, old_H, new_H) 
         ! metropolis step 
         mini = min(1.0, exp(-1*(new_H-old_H)))
-        write(*,*) "Update probability is given", exp(-1*(new_H-old_H))
         call random_number(accept_prob)
         if (accept_prob>mini) then 
             new_lattice = flattened_lattice
             write(*,*) "HMC update failed"
             H_val = old_H
-            success = 0
         else
             H_val = new_H
-            success = 1
         end if 
+
     end subroutine HMC 
 end module helper
 
