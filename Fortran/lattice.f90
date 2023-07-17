@@ -1,3 +1,6 @@
+! Include the Mersenne Twister module
+include 'mt19937.f90'
+
 module lattice_maker
     use converter
     use mt19937
@@ -29,7 +32,7 @@ module lattice_maker
         do i = 1, latticeCount
 
             y = grnd()
-            lattice(i) = y * 1 - 0.5
+            lattice(i) = y * 1
 
 
         end do 

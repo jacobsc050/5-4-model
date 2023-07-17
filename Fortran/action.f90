@@ -18,8 +18,8 @@ program action
     logical :: fileExists
     integer :: unitNumber
 
-    params(1) = 1 ! kappa
-    params(2) = 1! lambda_tilda
+    params(1) = 0.5 ! kappa
+    params(2) = 1 ! lambda_tilda
     
 
     filename = "pre_lattice.txt"
@@ -29,7 +29,9 @@ program action
     ! probability = exp(-1 * action_value)
     ! write(*, "('Probability:' F10.27)") probability
 
-    do j = 1,10000
+
+    !Thermal initiation
+    do j = 1,1000
         write(*,'(A, I0)') "j: ", j 
         flattened_lattice = metropolis_hastings(flattened_lattice, dim, size, params) 
     end do 
@@ -45,7 +47,7 @@ program action
         ! Open the file in write mode if it doesn't exist
         
     end if
-
+    !experiemnt
     do j = 1,1000
         write(*,'(A, I0)') "j: ", j 
         action_value = action_equation(flattened_lattice,dim, size, params)
