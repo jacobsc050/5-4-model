@@ -21,7 +21,7 @@ class phi_4:
         self.kap = kappa
         self.lam  = lambda_0
         self.dim = dim  #linear dimension 
-        self.lattice_shape = (self.N,)*self.dim 
+        self.lattice_shape = (self.dim,)*self.N
         
         self.phi = np.zeros(self.lattice_shape, dtype= float) #hot start 
         self.checkerboard = np.indices(self.lattice_shape).sum(axis=0) % 2 #creates checkerboard
@@ -29,7 +29,7 @@ class phi_4:
 
     def sum_neighbor(self, lattice):
         neighbor_sum = np.zeros(self.lattice_shape)
-        for dim in range(self.dim):
+        for dim in range(self.N):
             neighbor_sum += np.roll(lattice, 1, axis=dim)+np.roll(lattice, -1, axis=dim)
         return neighbor_sum    
      
